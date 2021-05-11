@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import { LeafletMouseEvent } from "leaflet";
-
 import { FiPlus } from "react-icons/fi";
 
 import Sidebar from "../components/Sidebar";
@@ -11,39 +9,25 @@ import mapIcon from "../utils/mapIcon";
 
 export default function CreateOrphanage() {
   const [position, setPosition] = useState({ latitude: 0, longitude: 0 });
-  // const [position, setPosition] = useState(null)
-
-  // function handleMapClick(event: LeafletMouseEvent) {
-  //   const { lat, lng } = event.latlng;
-  //   setPosition({
-  //       latitude: lat,
-  //       longitude: lng,
-  //   });
-  // }
 
   function LocationMarker() {
     const map = useMapEvents({
-      click() {
-        map.locate();
-      },
-      locationfound(e: any) {
-        const { lat, lng } = e.latlng;
+      click(event) {
+        const { lat, lng } = event.latlng;
         setPosition({
           latitude: lat,
           longitude: lng,
         });
-        // setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
       },
     });
-
-    return position.latitude === 0 ? (
-      <Marker
-        interactive={false}
-        icon={mapIcon}
-        position={[position.latitude, position.longitude]}
-      />
-    ) : null;
+    
+    return position.latitude !== 0 ? (
+        <Marker
+          position={[position.latitude, position.longitude]}
+          interactive={false}
+          icon={mapIcon}
+        />
+      ) : null
   }
 
   return (
@@ -57,9 +41,8 @@ export default function CreateOrphanage() {
 
             <MapContainer
               center={[-27.2092052, -49.6401092]}
-              style={{ width: "100%", height: 280 }}
+              style={{ width: "100%", height: 280}}
               zoom={15}
-              // onClick={handleMapClick}
             >
               <TileLayer url="https://a.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
